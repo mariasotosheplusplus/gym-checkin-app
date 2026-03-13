@@ -1,54 +1,51 @@
-
 import streamlit as st
 import pandas as pd
 from datetime import datetime
 
-usuarios = pd.DataFrame({
-    "id_usuario":[101,102,103],
-    "nombre":["Ana","Luis","Maria"],
-    "membresia_activa":[True,True,False]
-})
-
-rutinas = pd.DataFrame({
-    "id_usuario":[101,102,103],
-    "rutina":[
-        "Pierna: Sentadilla 4x10 / Prensa 4x12",
-        "Pecho: Press banca 4x8 / Aperturas 3x12",
-        "Espalda: Dominadas 4x6 / Remo 4x10"
-    ]
-})
-
 st.title("Check-in Gimnasio")
 
-id_usuario = st.query_params.get("id")
+df = pd.read_csv("gimnasio.csv")
 
-if id_usuario:
+id_unico = st.text_input("Ingresa tu IdUnico")
 
-    id_usuario = int(id_usuario)
+if st.button("Registrar asistencia"):
 
-    usuario = usuarios[usuarios.id_usuario == id_usuario]
-
-    if len(usuario)==0:
-        st.error("Usuario no encontrado")
+    if id_unico == "":
+        st.warning("Ingresa tu Id")
 
     else:
 
-        nombre = usuario.iloc[0]["nombre"]
-        activo = usuario.iloc[0]["membresia_activa"]
+        id_unico = int(id_unico)
 
-        st.write("Bienvenido", nombre)
+        usuario = df[df["IdUnico"] == id_unico]
 
-        if not activo:
-            st.error("Membresía vencida")
+        if usuario.empty:
+            st.error("Usuario no encontrado")
 
         else:
 
-            st.success("Asistencia registrada")
+            status = usuario.iloc[0]["Status"]
 
-            rutina = rutinas[rutinas.id_usuario == id_usuario].iloc[0]["rutina"]
+            if status == False:
 
-            st.subheader("Rutina de hoy")
-            st.write(rutina)
+                st.error("Membresía inactiva")
 
+            else:
+
+                nombre = usuario.iloc[0]["Nombre"]
+                rutina = usuario.iloc[0]["Rutina"]
+
+                ahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+                df.loc[df["IdUnico"] == id_unico, "Fecha"] = ahora
+
+                df.to_csv("gimnasio.csv", index=False)
+
+                st.success("Asistencia registrada")
+
+                st.subheader(f"Bienvenido {nombre}")
+
+                st.write("Rutina de hoy:")
+                st.write(rutina)
 else:
     st.write("Escanea tu QR para registrarte")
