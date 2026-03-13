@@ -49,3 +49,9 @@ if st.button("Registrar asistencia"):
                 st.write(rutina)
 else:
     st.write("Escanea tu QR para registrarte")
+
+st.subheader("Contenido actual del CSV en el servidor")
+
+df_debug = pd.read_csv("gimnasio.csv")
+
+st.dataframe(df_debug)
