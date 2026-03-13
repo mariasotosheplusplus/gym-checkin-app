@@ -4,7 +4,7 @@ from datetime import datetime
 
 st.title("Check-in Gimnasio")
 
-df = pd.read_csv("gimnasio.csv")
+df = pd.read_csv("gimnasio.csv", encoding="utf-8")
 
 id_unico = st.text_input("Ingresa tu IdUnico")
 
