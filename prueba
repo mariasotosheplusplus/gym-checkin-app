@@ -1,0 +1,7 @@
+import pandas as pd
+import streamlit as st
+
+df = pd.read_csv("gimnasio.csv")
+
+st.write("Contenido actual del archivo en el servidor:")
+st.dataframe(df)
